@@ -78,6 +78,7 @@ sub module_guts {
     my $reponame = $self->_github_repo_name;
     my $username = $self->{github_user_name};
     my $license = $self->_module_license($module, $rtname);
+    my $bug_email = "bug-$self->{distro} at rt.cpan.org";
     return <<<"HERE"
 package $module;
 use strict;
@@ -103,6 +104,16 @@ $module - the great new whatever
 \=head1 REPOSITORY
 
 L<https://github.com/$username/$reponame>
+
+\=head1 BUGS AND FEATURE REQUESTS
+
+Please report bugs and feature requests to my Github issues
+L<https://github.com/$username/$reponame/issues>.
+
+Although I prefer Github, non-Github users can use CPAN RT
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=$self->{distro}>.
+Please send email to C<$bug_email> if you do not have CPAN RT account.
+
 
 \=head1 AUTHOR
  
