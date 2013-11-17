@@ -1,13 +1,17 @@
 package Module::Starter::TOSHIOITO;
+use 5.10.0;
 use strict;
 use warnings;
 use base "Module::Starter::Simple";
+use Carp;
 
 sub create_distro {
     my ($either, %args) = @_;
-    $args{ignores_type} ||= [qw(git manifest)];
-    $args{verbose} = 1;
-    $args{github_user_name} ||= "debug-ito";
+    $args{ignores_type} //= [qw(git manifest)];
+    $args{verbose} //= 1;
+    if(!$args{github_user_name}) {
+        croak "github_user_name config parameter is mandatory";
+    }
     return $either->SUPER::create_distro(%args);
 }
 
