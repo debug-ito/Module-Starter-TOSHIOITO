@@ -11,9 +11,9 @@ sub create_distro {
     my $either = shift;
     $either = $either->new(@_) if !ref($either);
     my $self = $either;
-    $self->{builder} //= "Module::Build";
-    $self->{ignores_type} //= [qw(git manifest)];
+    $self->{ignores_type} = [qw(git manifest)] if !@{$self->{ignores_type}};
     $self->{verbose} //= 1;
+    $self->{license} //= "perl";
     if(!$self->{github_user_name}) {
         croak "github_user_name config parameter is mandatory";
     }
@@ -31,13 +31,13 @@ sub Build_PL_guts {
     my ($self, $main_module, $main_pm_file) = @_;
     my $author = "$self->{author} <$self->{email}>";
  
-    my $slname = $self->{license_record} ? $self->{license_record}->{slname} : $self->{license};
+    my $slname = $self->{license};
     my $reponame = $self->_github_repo_name;
      
     return <<"HERE";
 use $self->{minperl};
 use strict;
-use warnings FATAL => 'all';
+use warnings;
 use Module::Build::Pluggable (
     'CPANfile'
 );
@@ -57,7 +57,7 @@ my \$builder = Module::Build::Pluggable->new(
     meta_add => {
         resources => {
             bugtracker => 'https://github.com/$self->{github_user_name}/$reponame/issues',
-            repository => 'git://github.com/$self->{github_user_name}/$reponame.git'
+            repository => 'git://github.com/$self->{github_user_name}/$reponame.git',
         }
     }
 );
@@ -69,18 +69,18 @@ HERE
 sub create_Build_PL {
     my ($self, $main_module) = @_;
     my $result = $self->SUPER::create_Build_PL($main_module);
-    $self->create_file("cpanfile", <<'HERE');
+    $self->_create_file_relative("cpanfile", <<'HERE');
 
 on 'test' => sub {
     requires 'Test::More' => "0";
 };
 
 on 'configure' => sub {
-    requires 'Module::Build::Pluggable',           '0.09';
+    requires 'Module::Build', '0.42';
+    requires 'Module::Build::Pluggable', '0.09';
     requires 'Module::Build::Pluggable::CPANfile', '0.02';
 };
 HERE
-    $self->progress("Created cpanfile");
     return $result;
 }
 
@@ -104,7 +104,7 @@ __END__
 
 \=head1 NAME
 
-$module - the great new whatever
+$module - abstract
 
 \=head1 SYNOPSIS
 
@@ -123,7 +123,8 @@ L<https://github.com/$username/$reponame/issues>.
 
 Although I prefer Github, non-Github users can use CPAN RT
 L<https://rt.cpan.org/Public/Dist/Display.html?Name=$self->{distro}>.
-Please send email to C<$bug_email> if you do not have CPAN RT account.
+Please send email to C<$bug_email> to report bugs
+if you do not have CPAN RT account.
 
 
 \=head1 AUTHOR
@@ -137,6 +138,14 @@ $license
 HERE
 }
 
+sub _create_file_relative {
+    my ($self, $paths_ref, @contents) = @_;
+    $paths_ref = [$paths_ref] if not ref($paths_ref);
+    my $path = File::Spec->catdir($self->{basedir}, @$paths_ref);
+    $self->create_file($path, @contents);
+    $self->progress("Created $path");
+}
+
 sub create_t {
     my ($self, @modules) = @_;
 
@@ -147,8 +156,7 @@ sub create_t {
         my %t_files = $self->$method(@modules);
         foreach my $filename (keys %t_files) {
             my $content = $t_files{$filename};
-            my $path = File::Spec->catdir($self->{basedir}, $type, $filename);
-            $self->create_file($path, $content);
+            $self->_create_file_relative([$type, $filename], $content);
             push @created_files, "$type/$filename";
         }
     }
@@ -224,6 +232,50 @@ sub _ensure_dir {
         mkpath();
         $self->progress("Created $dir");
     }
+}
+
+sub ignores_guts {
+    my ($self, $type) = @_;
+    return $self->SUPER::ignores_guts($type) if $type ne "manifest";
+    return <<'HERE'
+^_
+^\.
+^MYMETA\.yml$
+^MYMETA\.json$
+^_build
+^Build$
+^blib
+^MANIFEST\.
+^README\.pod$
+
+# Avoid version control files.
+\bRCS\b
+\bCVS\b
+,v$
+\B\.svn\b
+\b_darcs\b
+# (.git only in top-level, hence it's blocked above)
+ 
+# Avoid temp and backup files.
+~$
+\.tmp$
+\.old$
+\.bak$
+\..*?\.sw[po]$
+\#$
+\b\.#
+ 
+# avoid OS X finder files
+\.DS_Store$
+ 
+# ditto for Windows
+\bdesktop\.ini$
+\b[Tt]humbs\.db$
+ 
+# Avoid patch remnants
+\.orig$
+\.rej$
+HERE
 }
 
 1;
