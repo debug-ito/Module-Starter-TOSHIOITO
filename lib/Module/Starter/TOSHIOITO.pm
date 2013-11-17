@@ -7,6 +7,8 @@ use Carp;
 use File::Spec;
 use ExtUtils::Command qw(mkpath);
 
+our $VERSION = '0.01';
+
 sub create_distro {
     my $either = shift;
     $either = $either->new(@_) if !ref($either);
@@ -282,21 +284,36 @@ HERE
 
 __END__
 
+=pod
+
 =head1 NAME
 
-Module::Starter::TOSHIOITO - The great new Module::Starter::TOSHIOITO!
+Module::Starter::TOSHIOITO - abstract
 
 =head1 SYNOPSIS
 
+=head1 DESCRIPTION
 
-=head1 SUBROUTINES/METHODS
+=head1 SEE ALSO
+
+=head1 REPOSITORY
+
+L<https://github.com/debug-ito/Module-Starter-TOSHIOITO>
+
+=head1 BUGS AND FEATURE REQUESTS
+
+Please report bugs and feature requests to my Github issues
+L<https://github.com/debug-ito/Module-Starter-TOSHIOITO/issues>.
+
+Although I prefer Github, non-Github users can use CPAN RT
+L<https://rt.cpan.org/Public/Dist/Display.html?Name=Module-Starter-TOSHIOITO>.
+Please send email to C<bug-Module-Starter-TOSHIOITO at rt.cpan.org> to report bugs
+if you do not have CPAN RT account.
 
 
 =head1 AUTHOR
-
+ 
 Toshio Ito, C<< <toshioito at cpan.org> >>
-
-=head1 ACKNOWLEDGEMENTS
 
 
 =head1 LICENSE AND COPYRIGHT
@@ -307,6 +324,6 @@ This program is free software; you can redistribute it and/or modify it
 under the terms of either: the GNU General Public License as published
 by the Free Software Foundation; or the Artistic License.
 
-See http://dev.perl.org/licenses/ for more information.
+See L<http://dev.perl.org/licenses/> for more information.
 
 =cut
