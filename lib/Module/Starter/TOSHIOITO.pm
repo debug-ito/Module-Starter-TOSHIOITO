@@ -4,15 +4,20 @@ use strict;
 use warnings;
 use base "Module::Starter::Simple";
 use Carp;
+use File::Spec;
+use ExtUtils::Command qw(mkpath);
 
 sub create_distro {
-    my ($either, %args) = @_;
-    $args{ignores_type} //= [qw(git manifest)];
-    $args{verbose} //= 1;
-    if(!$args{github_user_name}) {
+    my $either = shift;
+    $either = $either->new(@_) if !ref($either);
+    my $self = $either;
+    $self->{builder} //= "Module::Build";
+    $self->{ignores_type} //= [qw(git manifest)];
+    $self->{verbose} //= 1;
+    if(!$self->{github_user_name}) {
         croak "github_user_name config parameter is mandatory";
     }
-    return $either->SUPER::create_distro(%args);
+    return $self->SUPER::create_distro();
 }
 
 sub _github_repo_name {
@@ -64,7 +69,7 @@ HERE
 sub create_Build_PL {
     my ($self, $main_module) = @_;
     my $result = $self->SUPER::create_Build_PL($main_module);
-    $self->create_file("cpanfile", <<<'HERE');
+    $self->create_file("cpanfile", <<'HERE');
 
 on 'test' => sub {
     requires 'Test::More' => "0";
@@ -85,7 +90,7 @@ sub module_guts {
     my $username = $self->{github_user_name};
     my $license = $self->_module_license($module, $rtname);
     my $bug_email = "bug-$self->{distro} at rt.cpan.org";
-    return <<<"HERE"
+    return <<"HERE"
 package $module;
 use strict;
 use warnings;
@@ -130,6 +135,95 @@ $license
 \=cut
 
 HERE
+}
+
+sub create_t {
+    my ($self, @modules) = @_;
+
+    my @created_files = ();
+    foreach my $type ("t", "xt") {
+        $self->_ensure_dir($type);
+        my $method = "${type}_guts";
+        my %t_files = $self->$method(@modules);
+        foreach my $filename (keys %t_files) {
+            my $content = $t_files{$filename};
+            my $path = File::Spec->catdir($self->{basedir}, $type, $filename);
+            $self->create_file($path, $content);
+            push @created_files, "$type/$filename";
+        }
+    }
+
+    return @created_files;
+}
+
+sub t_guts {
+    my ($self, @modules) = @_;
+    my %t_files = ();
+    my $header = $self->_t_header;
+    my $nmodules = @modules;
+    my $main_module = $modules[0];
+    my $use_lines = join(
+        "\n", map { qq{    use_ok( '$_' ) || print "Bail out!\\n";} } @modules
+    );
+    $t_files{'00-load.t'} = $header.<<"HERE";
+plan tests => $nmodules;
+ 
+BEGIN {
+$use_lines
+}
+ 
+diag( "Testing $main_module \$${main_module}::VERSION, Perl \$], \$^X" );
+HERE
+
+    return %t_files;
+}
+
+sub xt_guts {
+    my ($self, @modules) = @_;
+    my %t_files = ();
+    my $header = $self->_t_header;
+    $t_files{'pod.t'} = $header.<<'HERE';
+# Ensure a recent version of Test::Pod
+my $min_tp = 1.22;
+eval "use Test::Pod $min_tp";
+plan skip_all => "Test::Pod $min_tp required for testing POD" if $@;
+ 
+all_pod_files_ok();
+HERE
+ 
+    $t_files{'manifest.t'} = $header.<<'HERE';
+unless ( $ENV{RELEASE_TESTING} ) {
+    plan( skip_all => "Set RELEASE_TESTING environment variable to test MANIFEST" );
+}
+ 
+my $min_tcm = 0.9;
+eval "use Test::CheckManifest $min_tcm";
+plan skip_all => "Test::CheckManifest $min_tcm required" if $@;
+ 
+ok_manifest();
+HERE
+    return %t_files;
+}
+
+sub _t_header {
+    my ($self) = @_;
+    return <<"EOH";
+use $self->{minperl};
+use strict;
+use warnings;
+use Test::More;
+ 
+EOH
+}
+
+sub _ensure_dir {
+    my ($self, @dirpaths) = @_;
+    my $dir = File::Spec->catdir($self->{basedir}, @dirpaths);
+    if (not -d $dir) {
+        local @ARGV = $dir;
+        mkpath();
+        $self->progress("Created $dir");
+    }
 }
 
 1;
