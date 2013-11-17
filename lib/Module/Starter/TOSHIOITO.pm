@@ -288,13 +288,98 @@ __END__
 
 =head1 NAME
 
-Module::Starter::TOSHIOITO - abstract
+Module::Starter::TOSHIOITO - create a module like TOSHIOITO does
 
 =head1 SYNOPSIS
 
+In your  ~/.module-starter/config
+ 
+    author: YOUR NAME
+    email: YOUR@EMAIL.ADDR
+    plugins: Module::Starter::TOSHIOITO
+    github_user_name: YOUR_GITHUB_USER_NAME
+
+Then
+
+    $ module-starter --mb --module Foo::Bar
+
 =head1 DESCRIPTION
 
+This is a simple L<Module::Starter> plugin that makes it create module templates that I like.
+
+This is based on L<Module::Starter::Simple>, the default plugin for L<Module::Starter>.
+The difference from the base is:
+
+=over
+
+=item *
+
+It assumes the module is hosted on L<Github|https://github.com>.
+Users are advised to report issues to Github's issue tracker.
+
+=item *
+
+C<github_user_name> config parameter is mandatory. It is your Github user name.
+
+=item *
+
+If the builder is L<Module::Build>, it uses L<Module::Build::Pluggable::CPANfile> and generates a template C<cpanfile>.
+
+=item *
+
+C<ignores_type> config parameter is "C<< git manifest >>" by default.
+
+=item *
+
+C<verbose> config parameter is true by default.
+
+=item *
+
+C<license> is C<perl> by default.
+
+=item *
+
+Module documentation is put at the end of module files.
+
+=item *
+
+It creates C<t> and C<xt> test directories.
+
+=back
+
+=head2 Caution
+
+As the name suggests, this module is rather for myself than for other CPAN authors.
+I will change behavior of this module drastically when I think I need it.
+
+=head2 Config parameters
+
+This module takes some config parameters from your ~/.module-starter/config
+
+=over
+
+=item C<github_user_name> (mandatory)
+
+Username of your Github account.
+In my case, it's L<debug-ito|https://github.com/debug-ito>.
+
+=item C<github_repo_prefix>, C<github_repo_postfix> (optional)
+
+Prefix and postfix for your module's Github repository based on the distribution name,
+so the repository name is constructed as
+
+    "${github_repo_prefix}${distribution_name}${github_repo_postfix}"
+
+By default, both of these params are empty strings.
+
+=item
+
+=back
+
+
 =head1 SEE ALSO
+
+L<Module::Starter>
 
 =head1 REPOSITORY
 
