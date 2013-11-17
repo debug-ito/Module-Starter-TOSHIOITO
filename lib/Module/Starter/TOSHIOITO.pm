@@ -13,7 +13,9 @@ sub create_distro {
 
 sub _github_repo_name {
     my ($self) = @_;
-    return $self->{distro};
+    my $prefix = $self->{github_repo_prefix} || "";
+    my $postfix = $self->{github_repo_postfix} || "";
+    return "$prefix$self->{distro}$postfix";
 }
 
 sub Build_PL_guts {
