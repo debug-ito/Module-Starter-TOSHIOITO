@@ -372,8 +372,6 @@ so the repository name is constructed as
 
 By default, both of these params are empty strings.
 
-=item
-
 =back
 
 
