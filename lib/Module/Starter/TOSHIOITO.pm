@@ -7,7 +7,7 @@ use Carp;
 use File::Spec;
 use ExtUtils::Command qw(mkpath);
 
-our $VERSION = '0.01';
+our $VERSION = '0.02';
 
 sub create_distro {
     my $either = shift;
@@ -193,24 +193,34 @@ sub xt_guts {
     my %t_files = ();
     my $header = $self->_t_header;
     $t_files{'pod.t'} = $header.<<'HERE';
-# Ensure a recent version of Test::Pod
-my $min_tp = 1.22;
-eval "use Test::Pod $min_tp";
-plan skip_all => "Test::Pod $min_tp required for testing POD" if $@;
+use Test::Pod;
  
 all_pod_files_ok();
+done_testing;
 HERE
  
     $t_files{'manifest.t'} = $header.<<'HERE';
-unless ( $ENV{RELEASE_TESTING} ) {
-    plan( skip_all => "Set RELEASE_TESTING environment variable to test MANIFEST" );
+use Test::CheckManifest;
+
+unless($ENV{RELEASE_TESTING}) {
+    plan(skip_all => "Set RELEASE_TESTING environment variable to test MANIFEST");
 }
  
-my $min_tcm = 0.9;
-eval "use Test::CheckManifest $min_tcm";
-plan skip_all => "Test::CheckManifest $min_tcm required" if $@;
- 
 ok_manifest();
+done_testing;
+HERE
+
+    $t_files{'consistent_version.t'} = $header.<<'HERE';
+use Test::ConsistentVersion;
+
+unless($ENV{RELEASE_TESTING}) {
+    plan(skip_all => "Set RELEASE_TESTING environment variable to test VERSION consistency");
+}
+
+Test::ConsistentVersion::check_consistent_versions(
+    no_pod => 1, no_readme => 1
+);
+done_testing;
 HERE
     return %t_files;
 }

@@ -3,6 +3,9 @@ requires "Module::Starter::Simple";
 requires "Carp";
 requires "File::Spec";
 requires "ExtUtils::Command";
+requires "Test::Pod" => "1.22";
+requires "Test::CheckManifest" => "0.9";
+requires "Test::ConsistentVersion";
 
 on 'test' => sub {
     requires 'Test::More' => "0";
