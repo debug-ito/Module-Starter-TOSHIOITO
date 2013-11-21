@@ -1,5 +1,12 @@
 Revision history for Module-Starter-TOSHIOITO
 
+0.02    2013-11-21
+        - Fix minor POD error.
+        - Modules used in xt/ tests are now mandatory. They are installed
+          as prerequisites of this module.
+        - Now it generates xt/consistent_version.t test using
+          Test::ConsistentVersion.
+
 0.01    2013-11-17
         First version, released on an unsuspecting world.
 
