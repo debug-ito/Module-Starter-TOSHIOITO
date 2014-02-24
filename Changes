@@ -1,5 +1,21 @@
 Revision history for Module-Starter-TOSHIOITO
 
+0.03    2014-02-24
+        - Stop generating xt/consistent_version.t.
+          It seems it's not the best practice to have consistent version
+          across all modules in a distribution. Well, I do think it's good,
+          but maintaining version numbers of all modules is an aweful task.
+          I've done several approaches (like letting a single module in the
+          dist keep the version number), but all of them broke something
+          in CPAN. So the only way to keep the consistency intact is to
+          let the packager software write version numbers (like
+          Dist::Zilla::Plugin::PkgVersion). However, not all CPAN authors
+          are happy with letting software rewrite your code (See
+          https://metacpan.org/pod/Dist::Milla#WHY ), and I don't like it
+          either. After all, many famous CPAN authors do not give
+          version numbers to all modules in a dist.
+
+
 0.02    2013-11-21
         - Fix minor POD error.
         - Modules used in xt/ tests are now mandatory. They are installed

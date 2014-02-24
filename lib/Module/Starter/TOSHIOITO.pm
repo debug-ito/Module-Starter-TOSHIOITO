@@ -7,7 +7,7 @@ use Carp;
 use File::Spec;
 use ExtUtils::Command qw(mkpath);
 
-our $VERSION = '0.02';
+our $VERSION = '0.03';
 
 sub create_distro {
     my $either = shift;
@@ -210,18 +210,6 @@ ok_manifest();
 done_testing;
 HERE
 
-    $t_files{'consistent_version.t'} = $header.<<'HERE';
-use Test::ConsistentVersion;
-
-unless($ENV{RELEASE_TESTING}) {
-    plan(skip_all => "Set RELEASE_TESTING environment variable to test VERSION consistency");
-}
-
-Test::ConsistentVersion::check_consistent_versions(
-    no_pod => 1, no_readme => 1
-);
-done_testing;
-HERE
     return %t_files;
 }
 
