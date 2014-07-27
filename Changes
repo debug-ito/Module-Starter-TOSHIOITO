@@ -1,5 +1,10 @@
 Revision history for Module-Starter-TOSHIOITO
 
+0.04    2014-07-27
+        - Generates .travis.yml
+        - Generates more detailed "repository" meta fields, which is defined
+          in Meta Spec version 2.
+
 0.03    2014-02-24
         - Stop generating xt/consistent_version.t.
           It seems it's not the best practice to have consistent version
