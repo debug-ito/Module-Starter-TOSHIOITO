@@ -1,5 +1,13 @@
 Revision history for Module-Starter-TOSHIOITO
 
+0.05    2014-07-28
+        - Add "before_script" command to .travis.yml.
+          This is because cpanm (as of version 1.7004) does not install configure-requires
+          in cpanfile. See also: https://github.com/miyagawa/cpanminus/issues/398
+          Current best practice is to generate and keep META files in the repository.
+          In that case, cpanm will install configure-requires. But I'm afraid I don't wanna
+          keep them around. They are so verbose :(
+
 0.04    2014-07-27
         - Generates .travis.yml
         - Generates more detailed "repository" meta fields, which is defined

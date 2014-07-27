@@ -7,7 +7,7 @@ use Carp;
 use File::Spec;
 use ExtUtils::Command qw(mkpath);
 
-our $VERSION = '0.04';
+our $VERSION = '0.05';
 
 sub create_distro {
     my $either = shift;
@@ -100,6 +100,7 @@ perl:
   - "5.14"
   - "5.16"
   - "5.18"
+before_script: "cpanm Module::Build::Pluggable::CPANfile"
 HERE
     return $result;
 }
