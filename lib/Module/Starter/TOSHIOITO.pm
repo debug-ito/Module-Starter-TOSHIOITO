@@ -92,6 +92,15 @@ on 'configure' => sub {
     requires 'Module::Build::Pluggable::CPANfile', '0.02';
 };
 HERE
+    $self->_create_file_relative(".travis.yml", <<'HERE');
+language: perl
+perl:
+  - "5.10"
+  - "5.12"
+  - "5.14"
+  - "5.16"
+  - "5.18"
+HERE
     return $result;
 }
 
