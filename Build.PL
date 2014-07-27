@@ -18,9 +18,18 @@ my $builder = Module::Build::Pluggable->new(
         file => ['README.pod'],
     },
     meta_add => {
+        'meta-spec' => {
+            version => 2,
+            url => 'https://metacpan.org/pod/CPAN::Meta::Spec',
+        },
         resources => {
-            bugtracker => 'https://github.com/debug-ito/Module-Starter-TOSHIOITO/issues',
-            repository => 'git://github.com/debug-ito/Module-Starter-TOSHIOITO.git',
+            bugtracker => {
+                web => 'https://github.com/debug-ito/Module-Starter-TOSHIOITO/issues',
+            },
+            repository => {
+                url => 'git://github.com/debug-ito/Module-Starter-TOSHIOITO.git',
+                web => 'https://github.com/debug-ito/Module-Starter-TOSHIOITO',
+            },
         }
     }
 );

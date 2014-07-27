@@ -57,9 +57,18 @@ my \$builder = Module::Build::Pluggable->new(
         file => ['README.pod'],
     },
     meta_add => {
+        'meta-spec' => {
+            version => 2,
+            url => 'https://metacpan.org/pod/CPAN::Meta::Spec',
+        },
         resources => {
-            bugtracker => 'https://github.com/$self->{github_user_name}/$reponame/issues',
-            repository => 'git://github.com/$self->{github_user_name}/$reponame.git',
+            bugtracker => {
+                web => 'https://github.com/$self->{github_user_name}/$reponame/issues',
+            },
+            repository => {
+                url => 'git://github.com/$self->{github_user_name}/$reponame.git',
+                web => 'https://github.com/$self->{github_user_name}/$reponame',
+            },
         }
     }
 );
