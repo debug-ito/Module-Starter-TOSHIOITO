@@ -5,6 +5,11 @@ use Test::Builder;
 use Module::Starter qw(Module::Starter::TOSHIOITO);
 use Module::CPANfile;
 
+if($ENV{RELEASE_TESTING}) {
+    plan "skip_all", "File generation test is skipped while RELEASE_TESTING";
+    exit 0;
+}
+
 my $MOD_NAME = 'Module::Starter::TOSHIOITO';
 my $DIST_NAME = $MOD_NAME; $DIST_NAME =~ s/::/-/g;
 
