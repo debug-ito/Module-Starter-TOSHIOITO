@@ -13,7 +13,7 @@ sub create_distro {
     my $either = shift;
     $either = $either->new(@_) if !ref($either);
     my $self = $either;
-    $self->{ignores_type} = [qw(git manifest)] if !@{$self->{ignores_type}};
+    $self->{ignores_type} = [qw(git manifest)] if !$self->{ignores_type} || !@{$self->{ignores_type}};
     $self->{verbose} //= 1;
     $self->{license} //= "perl";
     if(!$self->{github_user_name}) {
