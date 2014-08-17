@@ -58,7 +58,7 @@ Module::Build->new(
     
     no_index => {
         directory => ["t", "xt", "eg", "inc", "share"],
-        file => ['README.pod'],
+        file => ['README.pod', 'README.md'],
     },
     meta_add => {
         'meta-spec' => {
