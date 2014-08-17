@@ -102,7 +102,7 @@ perl:
   - "5.16"
   - "5.18"
   - "5.20"
-install: "cpanm --quiet --notest `cpanfile-dump`"
+before_install: "cpanm --quiet `cpanfile-dump --no-build --no-test --no-runtime`"
 HERE
     return $result;
 }
