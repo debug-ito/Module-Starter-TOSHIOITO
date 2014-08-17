@@ -7,7 +7,7 @@ use Carp;
 use File::Spec;
 use ExtUtils::Command qw(mkpath);
 
-our $VERSION = '0.06';
+our $VERSION = '0.07';
 
 sub create_distro {
     my $either = shift;
@@ -342,7 +342,7 @@ C<github_user_name> config parameter is mandatory. It is your Github user name.
 
 =item *
 
-If the builder is L<Module::Build>, it uses L<Module::Build::Pluggable::CPANfile> and generates a template C<cpanfile>.
+If the builder is L<Module::Build>, it uses L<Module::Build::Prereqs::FromCPANfile> and generates a template C<cpanfile>.
 
 =item *
 
