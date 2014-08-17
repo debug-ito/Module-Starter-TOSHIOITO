@@ -18,7 +18,7 @@ Module::Build->new(
     mb_prereqs_from_cpanfile(),
     
     no_index => {
-        directory => ["t", "xt", "eg", "inc"],
+        directory => ["t", "xt", "eg", "inc", "share"],
         file => ['README.pod'],
     },
     meta_add => {
