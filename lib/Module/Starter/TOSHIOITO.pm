@@ -40,11 +40,10 @@ sub Build_PL_guts {
 use $self->{minperl};
 use strict;
 use warnings;
-use Module::Build::Pluggable (
-    'CPANfile'
-);
+use Module::Build;
+use Module::Build::Prereqs::FromCPANfile;
  
-my \$builder = Module::Build::Pluggable->new(
+Module::Build->new(
     module_name         => '$main_module',
     license             => '$slname',
     dist_author         => q{$author},
@@ -52,6 +51,11 @@ my \$builder = Module::Build::Pluggable->new(
     release_status      => 'stable',
     add_to_cleanup     => [ '$self->{distro}-*' ],
     recursive_test_files => 1,
+    dynamic_config => 1,
+    (-d "share") ? (share_dir => "share") : (),
+    
+    mb_prereqs_from_cpanfile(),
+    
     no_index => {
         directory => ["t", "xt", "eg", "inc"],
         file => ['README.pod'],
@@ -71,9 +75,7 @@ my \$builder = Module::Build::Pluggable->new(
             },
         }
     }
-);
- 
-\$builder->create_build_script();
+)->create_build_script();
 HERE
 }
 
@@ -88,8 +90,7 @@ on 'test' => sub {
 
 on 'configure' => sub {
     requires 'Module::Build', '0.42';
-    requires 'Module::Build::Pluggable', '0.09';
-    requires 'Module::Build::Pluggable::CPANfile', '0.02';
+    requires 'Module::Build::Prereqs::FromCPANfile', "0.02";
 };
 HERE
     $self->_create_file_relative(".travis.yml", <<'HERE');
@@ -100,7 +101,8 @@ perl:
   - "5.14"
   - "5.16"
   - "5.18"
-before_script: "cpanm Module::Build::Pluggable::CPANfile"
+  - "5.20"
+install: "cpanm --quiet --notest `cpanfile-dump`"
 HERE
     return $result;
 }

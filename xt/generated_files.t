@@ -40,9 +40,14 @@ foreach my $file (qw(Build.PL .gitignore .travis.yml MANIFEST.SKIP)) {
     check_diff $file;
 }
 
+foreach my $file (qw(README Changes lib/Module/Starter/TOSHIOITO.pm)) {
+    my $path = "$DIST_NAME/$file";
+    ok(-f $path, "$path generated OK");
+}
+
 {
-    my $got_prereqs = Module::CPANfile->load("$DIST_NAME/cpanfile")->prereq_spec;
-    my $exp_prereqs = Module::CPANfile->load("cpanfile")->prereq_spec;
+    my $got_prereqs = Module::CPANfile->load("$DIST_NAME/cpanfile")->prereq_specs;
+    my $exp_prereqs = Module::CPANfile->load("cpanfile")->prereq_specs;
     is_deeply($got_prereqs->{configure}{requires}, $exp_prereqs->{configure}{requires},
               "generated cpanfile configure_requires OK");
 }
