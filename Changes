@@ -1,5 +1,12 @@
 Revision history for Module-Starter-TOSHIOITO
 
+0.06    2014-08-17
+        - Now Build.PL uses Module::Build::Prereqs::FromCPANfile instead of
+          Module::Build::Pluggable::CPANfile. The former is a lot lighter
+          in terms of dependency.
+        - Add an author test to check generated files.
+        - .travis.yml is updated to install configure_requires in before_install phase.
+
 0.05    2014-07-28
         - Add "before_script" command to .travis.yml.
           This is because cpanm (as of version 1.7004) does not install configure-requires

@@ -7,7 +7,7 @@ use Carp;
 use File::Spec;
 use ExtUtils::Command qw(mkpath);
 
-our $VERSION = '0.05';
+our $VERSION = '0.06';
 
 sub create_distro {
     my $either = shift;
