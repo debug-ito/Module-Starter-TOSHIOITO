@@ -1,5 +1,9 @@
 Revision history for Module-Starter-TOSHIOITO
 
+0.09    2014-10-12
+        - .travis.yml is updated to install Module::Build::Prereqs::FromCPANfile explicitly.
+          This is because Travis-CI doesn't have cpanfile-dump command anymore.
+
 0.08    2014-08-17
         - Add "share" directory and "README.md" to no_index.
 
